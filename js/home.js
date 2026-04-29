@@ -7,9 +7,25 @@ function initHomeSection() {
   const customCard = document.getElementById("homeCustomImageCard");
   if (!customCard) return;
 
-  const saved = localStorage.getItem(HOME_CUSTOM_IMAGE_STORAGE_KEY);
+  const saved = getValidHomeCustomImage();
   const image = saved || HOME_CUSTOM_IMAGE_FALLBACK;
   customCard.style.backgroundImage = `url('${image}')`;
+}
+
+function getValidHomeCustomImage() {
+  const saved = localStorage.getItem(HOME_CUSTOM_IMAGE_STORAGE_KEY);
+  if (!saved) return null;
+
+  const value = String(saved).trim();
+  const isDataImage = value.startsWith("data:image/");
+  const isHttpImage = /^https?:\/\//i.test(value);
+
+  if (isDataImage || isHttpImage) {
+    return value;
+  }
+
+  localStorage.removeItem(HOME_CUSTOM_IMAGE_STORAGE_KEY);
+  return null;
 }
 
 function triggerHomeCustomImagePicker() {
@@ -53,3 +69,5 @@ function fileToDataUrl(file) {
     reader.readAsDataURL(file);
   });
 }
+
+window.addEventListener("load", initHomeSection);
