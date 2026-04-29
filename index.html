@@ -1,0 +1,1665 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BorborygBros</title>
+  <link rel="icon" type="image/png" href="https://cards.scryfall.io/art_crop/front/0/2/02df18c5-07b9-4e85-9c4b-58b63fa59437.jpg?1702429604">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cormorant+Garamond:wght@400;500;600;700&display=swap');
+
+    :root {
+      --app-bg-base: #b08a4f;
+      --app-bg-image: url("https://cards.scryfall.io/art_crop/front/7/c/7c4a08e9-06c7-43e9-a855-4f507a35ae8b.jpg?1593272594");
+      --surface-bg: rgba(255, 255, 255, 0.9);
+      --surface-bg-soft: rgba(248, 251, 255, 0.86);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      background-color: var(--app-bg-base);
+      background-image:
+        linear-gradient(160deg, rgba(186, 143, 72, 0.88), rgba(116, 88, 43, 0.78)),
+        var(--app-bg-image);
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #273142;
+      font-size: 18px;
+      line-height: 1.55;
+    }
+    
+    .navbar {
+      background: #333;
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      margin-bottom: 26px;
+    }
+
+    .navbar-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      min-height: 40px;
+    }
+
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,0.45);
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      color: #f5f8ff;
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      letter-spacing: 0.9px;
+      white-space: nowrap;
+    }
+
+    .quick-back-btn {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 16px;
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      min-height: 40px;
+      margin-left: 0;
+      white-space: nowrap;
+    }
+
+    .quick-back-btn:hover {
+      background: rgba(255,255,255,0.12);
+    }
+    .navbar button {
+      background: #555;
+      color: white;
+      border: none;
+      padding: 11px 22px;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 8px;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.3px;
+      min-height: 44px;
+    }
+    .navbar button:hover { background: #777; }
+    .navbar button.active { background: #0066cc; }
+
+    .user-menu-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .user-menu-btn {
+      background: #444;
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.3px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-menu-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,0.55);
+      flex-shrink: 0;
+    }
+
+    .user-menu-btn:hover { background: #555; }
+
+    .user-menu-dropdown {
+      position: absolute;
+      left: 0;
+      right: auto;
+      top: 48px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      min-width: 190px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      z-index: 999;
+      display: none;
+      overflow: hidden;
+    }
+
+    .user-menu-dropdown button {
+      width: 100%;
+      text-align: left;
+      background: white;
+      color: #333;
+      border: none;
+      border-radius: 0;
+      padding: 12px 14px;
+      font-size: 18px;
+      cursor: pointer;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+    }
+
+    .user-menu-dropdown button:hover {
+      background: #f5f7fb;
+    }
+
+    .home-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 26px;
+    }
+
+    @media (max-width: 1100px) {
+      .home-grid {
+        grid-template-columns: repeat(2, minmax(260px, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .home-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+    }
+
+    .home-hero {
+      position: relative;
+      border-radius: 0 0 14px 14px;
+      overflow: hidden;
+      height: 280px;
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      margin-top: -40px;
+      background-image: url("https://cards.scryfall.io/art_crop/front/7/c/7c4a08e9-06c7-43e9-a855-4f507a35ae8b.jpg?1593272594");
+      background-size: 1920px auto;
+      background-repeat: no-repeat;
+      background-position: center 18%;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      margin-bottom: 8px;
+    }
+
+    .home-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(20, 20, 20, 0.82), rgba(20, 20, 20, 0.58));
+    }
+
+    .home-hero-content {
+      position: relative;
+      z-index: 1;
+      padding: 28px;
+      color: #fff;
+      display: flex;
+      align-items: flex-end;
+      height: 100%;
+    }
+
+    .home-hero-title {
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-shadow: 0 3px 18px rgba(0,0,0,0.45);
+      line-height: 1;
+      font-family: 'Cinzel', serif;
+    }
+
+    .home-card {
+      position: relative;
+      overflow: hidden;
+      background: #111;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      min-height: 180px;
+      background-size: 680px auto;
+      background-repeat: no-repeat;
+      background-position: center 22%;
+    }
+
+    .home-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    .home-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.58), rgba(0,0,0,0.78));
+    }
+
+    .home-card-content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .home-card h3 {
+      margin: 0;
+      color: #fff;
+      font-size: clamp(20px, 2.4vw, 30px);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      font-family: 'Cinzel', serif;
+    }
+
+    .home-card p {
+      margin: 0;
+      color: #e9edf5;
+      font-size: 16px;
+    }
+    
+    .container { max-width: 1320px; margin: 0 auto; padding: 26px 34px; }
+    
+    .section { display: none; }
+    .section.active { display: block; }
+    
+    h1 { color: #1f2a37; margin-bottom: 22px; font-size: 42px; }
+    h2 { color: #2f3d4f; margin-top: 26px; margin-bottom: 14px; border-bottom: 2px solid #007bff; padding-bottom: 7px; font-size: 29px; }
+    h3 { color: #3f4f62; margin-top: 18px; margin-bottom: 12px; font-size: 23px; }
+
+    h1, h2, h3 {
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.5px;
+    }
+    
+    .form-group {
+      background: var(--surface-bg);
+      padding: 20px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 11px 12px;
+      margin-bottom: 12px;
+      border: 1px solid #cfd8e3;
+      border-radius: 8px;
+      font-size: 17px;
+    }
+
+    .commander-suggestions {
+      margin-top: -8px;
+      margin-bottom: 10px;
+      border: 1px solid #cfd8e3;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      overflow: hidden;
+      position: relative;
+      z-index: 20;
+    }
+
+    .commander-suggestion-item {
+      width: 100%;
+      text-align: left;
+      background: #fff;
+      color: #223248;
+      border: none;
+      border-bottom: 1px solid #e5ebf3;
+      border-radius: 0;
+      padding: 11px 12px;
+      cursor: pointer;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      min-height: 42px;
+    }
+
+    .commander-suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .commander-suggestion-item:hover {
+      background: #f5f8fc;
+    }
+    
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 11px 20px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: 'Cinzel', serif;
+      min-height: 42px;
+    }
+    button:hover { background: #0056b3; }
+    
+    .list-container {
+      background: var(--surface-bg);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table th, table td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #dde3ec;
+      font-size: 17px;
+    }
+    table th { background: #f5f8fc; font-weight: bold; font-size: 16px; color: #2d3c4f; }
+    
+    .box-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+    
+    .box {
+      background: var(--surface-bg);
+      padding: 22px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .player-card-clickable {
+      cursor: pointer;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .player-card-clickable::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 44%;
+      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.7));
+      pointer-events: none;
+    }
+
+    .player-card-clickable .player-card-name {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 12px;
+      margin: 0;
+      padding: 0 10px;
+      text-align: center;
+      color: #f4f8ff;
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      letter-spacing: 0.7px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .player-profile-banner {
+      position: relative;
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      min-height: 280px;
+      border-radius: 0;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      margin-top: -8px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .player-profile-banner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(12,16,24,0.15), rgba(12,16,24,0.72));
+    }
+
+    .player-profile-banner-title {
+      position: absolute;
+      left: 18px;
+      bottom: 16px;
+      color: #f4f8ff;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(30px, 4vw, 44px);
+      letter-spacing: 1px;
+      text-shadow: 0 2px 14px rgba(0,0,0,0.55);
+      z-index: 1;
+      margin: 0;
+    }
+
+    .player-profile-back-btn {
+      display: none !important;
+    }
+
+    .player-profile-back-btn:hover {
+      display: none !important;
+    }
+
+    .player-profile-section {
+      margin-top: 10px;
+    }
+
+    .player-profile-section h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .player-stats-list {
+      margin-top: 6px;
+      border-top: 1px solid #e1e8f2;
+      border-bottom: 1px solid #e1e8f2;
+      background: transparent;
+    }
+
+    .player-stat-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid #e7edf5;
+    }
+
+    .player-stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .player-stat-label {
+      color: #2f3f53;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .player-stat-value {
+      color: #1f2f43;
+      font-size: 19px;
+      text-align: right;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) {
+      margin-top: -26px;
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+    }
+
+    #playerProfile-page #playerProfileContainer {
+      width: 100%;
+    }
+
+    #myProfile-page #myProfileContainer {
+      width: 100%;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .player-profile-content {
+      padding: 0 8px 12px;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .player-profile-panel {
+      background: var(--surface-bg-soft);
+      border: 1px solid #dfe7f2;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .decks-list {
+      margin-top: 4px;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      overflow: visible;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .deck-item {
+      background: #f7faff;
+      margin-bottom: 1px;
+      border-bottom: 1px solid #dde6f1;
+      border-radius: 0;
+      padding: 14px 12px;
+      gap: 14px;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .deck-item:last-child {
+      margin-bottom: 0;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .deck-thumb {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .deck-main {
+      display: flex;
+      align-items: center;
+      min-height: 80px;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .deck-title-row {
+      gap: 12px;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .deck-name {
+      font-size: 24px;
+      line-height: 1.05;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .deck-colors {
+      min-height: 24px;
+      gap: 4px;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .deck-colors img {
+      width: 20px !important;
+      height: 20px !important;
+      margin-right: 2px !important;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .deck-side-stats {
+      min-width: 92px;
+      font-size: 16px;
+      line-height: 1.3;
+      gap: 2px;
+    }
+
+    :is(#playerProfile-page, #myProfile-page) .deck-collapsible > summary {
+      margin-bottom: 6px;
+    }
+
+    #matches {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      padding: 0 10px 16px;
+    }
+
+    #matches .list-container,
+    #matches .form-group,
+    #matches #matchStatsContainer {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    #matches table th,
+    #matches table td {
+      font-size: 19px;
+      padding: 14px 12px;
+    }
+
+    #matches table th {
+      font-size: 18px;
+    }
+
+    #matches .box-container {
+      grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
+      gap: 16px;
+    }
+
+    #matches .box {
+      padding: 24px;
+    }
+
+    #matches .box h3 {
+      font-size: 28px;
+    }
+
+    #matches .box p {
+      font-size: 20px;
+      line-height: 1.35;
+    }
+
+    #matches .box-stat {
+      font-size: 36px;
+    }
+
+    #matches .stats-grid {
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+    }
+
+    #matches .stat-box {
+      padding: 22px;
+    }
+
+    #matches .stat-name {
+      font-size: 18px;
+    }
+
+    #matches .stat-winrate {
+      font-size: 30px;
+    }
+
+    #matches .stat-details {
+      font-size: 16px;
+    }
+
+    #matches .match-hero-box {
+      position: relative;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      border: 1px solid rgba(255,255,255,0.22);
+    }
+
+    #matches .match-hero-box::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(12, 18, 28, 0.35), rgba(12, 18, 28, 0.72));
+      z-index: 0;
+    }
+
+    #matches .match-hero-box > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    #matches .match-hero-box h3,
+    #matches .match-hero-box p,
+    #matches .match-hero-box .box-stat {
+      color: #f7fbff;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.45);
+    }
+
+    #matches .match-winner-cell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    #matches .match-delete-btn {
+      background: #dc3545;
+      border: none;
+      color: #fff;
+      border-radius: 6px;
+      min-height: 30px;
+      padding: 5px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    #matches .match-delete-btn:hover {
+      background: #c82333;
+    }
+
+    #matches .match-color-box {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.22);
+    }
+
+    #matches .match-color-box::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(14, 18, 28, 0.22), rgba(14, 18, 28, 0.68));
+      z-index: 0;
+    }
+
+    #matches .match-color-box > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    #matches .match-color-box .stat-name,
+    #matches .match-color-box .stat-winrate,
+    #matches .match-color-box .stat-details {
+      color: #f8fbff;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.45);
+    }
+
+    #matches .match-color-box .stat-color img {
+      width: 34px !important;
+      height: 34px !important;
+      margin-right: 0 !important;
+      filter: drop-shadow(0 1px 4px rgba(0,0,0,0.4));
+    }
+
+    #other {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      padding: 0 10px 16px;
+    }
+
+    #other .other-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    #other .other-panel {
+      background: var(--surface-bg-soft);
+      border: 1px solid #dfe7f2;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    #other .other-panel h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    #other .other-note {
+      color: #4c5a6f;
+      margin-bottom: 10px;
+    }
+
+    #other .other-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    #other .other-row label {
+      font-weight: 700;
+      color: #2f3f53;
+      display: block;
+      margin-bottom: 4px;
+      font-size: 16px;
+    }
+
+    #other .other-players-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid #dbe4f0;
+      border-radius: 8px;
+      padding: 12px;
+      max-height: 220px;
+      overflow: auto;
+      margin-bottom: 10px;
+    }
+
+    #other .other-players-list label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      font-weight: 600;
+      color: #33445b;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    #other .other-players-list input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      flex: 0 0 auto;
+    }
+
+    #other .other-result {
+      margin-top: 8px;
+      border-top: 1px solid #dbe4f0;
+      padding-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 8px;
+    }
+
+    #other .other-result-table {
+      margin-bottom: 0;
+      background: rgba(247,250,255,0.86);
+      border: 1px solid #dbe4f0;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    #other .other-result-table h4 {
+      margin: 0 0 6px;
+      font-size: 21px;
+      color: #2a3a52;
+    }
+
+    #other .other-result-table p {
+      margin: 0;
+      color: #3a4c64;
+      font-size: 18px;
+    }
+
+    #other .vocab-list {
+      margin-top: 8px;
+      border: 1px solid #dbe4f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #other .vocab-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #e4ebf4;
+      background: rgba(248,251,255,0.8);
+      font-size: 18px;
+    }
+
+    #other .vocab-row:last-child {
+      border-bottom: none;
+    }
+
+    #other .vocab-arrow {
+      color: #7a8799;
+      font-size: 14px;
+    }
+
+    #other .other-delete-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: none;
+      background: #dc3545;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 0;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    #other .other-delete-btn:hover {
+      background: #c82333;
+    }
+
+    #other .link-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    #other .link-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      background: rgba(248,251,255,0.8);
+      border: 1px solid #dbe4f0;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    #other .link-item:hover {
+      background: rgba(240,247,255,0.94);
+    }
+
+    #other .link-title {
+      color: #101828;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    #other .link-separator {
+      color: #667085;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    #other .link-url {
+      color: #284f8f;
+      font-size: 18px;
+      text-decoration: none;
+      word-break: break-word;
+    }
+
+    #other .link-url:hover {
+      text-decoration: underline;
+    }
+    
+    .box:hover { transform: translateY(-5px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    
+    .box h3:not(.player-card-name) { color: #2d3b4d; margin-bottom: 11px; font-size: 24px; }
+    .box p { color: #4d5c70; font-size: 17px; margin: 6px 0; }
+    .box-stat { font-size: 30px; font-weight: bold; color: #007bff; margin: 11px 0; }
+    .box-buttons { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+    .box-btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 12px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 14px;
+      flex: 1;
+      min-width: 80px;
+    }
+    .box-btn:hover { background: #0056b3; }
+    .box-btn.danger { background: #dc3545; }
+    .box-btn.danger:hover { background: #c82333; }
+    
+    /* STATISTICHE COLORI */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .stat-box {
+      background: var(--surface-bg);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    
+    .stat-box:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    
+    .stat-color {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    
+    .stat-name {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    
+    .stat-winrate {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+      margin-bottom: 5px;
+    }
+    
+    .stat-details {
+      font-size: 14px;
+      color: #666;
+    }
+    
+    /* PROFILO PERSONALE */
+    .profile-setup {
+      background: var(--surface-bg);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .profile-box {
+      background: var(--surface-bg);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .decks-list {
+      margin-top: 12px;
+      border: 1px solid #e3e8ef;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f7f9fc;
+    }
+    
+    .deck-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8f9fa;
+      padding: 8px 10px;
+      margin-bottom: 2px;
+      border-bottom: 1px solid #e3e8ef;
+    }
+
+    .deck-item:last-child {
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    .deck-thumb {
+      width: 56px;
+      height: 56px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 1px solid #d7dee8;
+      flex-shrink: 0;
+    }
+
+    .deck-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .deck-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .deck-name {
+      color: #222;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    
+    .deck-item strong {
+      color: #333;
+      display: block;
+      margin-bottom: 3px;
+      line-height: 1.1;
+    }
+
+    .deck-colors {
+      min-height: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .deck-side-stats {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      font-size: 12px;
+      color: #425166;
+      line-height: 1.2;
+      white-space: nowrap;
+      min-width: 72px;
+    }
+
+    .deck-collapsible {
+      margin-top: 8px;
+    }
+
+    .deck-collapsible > summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: #344054;
+      margin-bottom: 8px;
+    }
+
+    .deck-delete-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: none;
+      background: #dc3545;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .deck-item-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .deck-edit-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: none;
+      background: #2f80ed;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .deck-edit-btn:hover {
+      background: #1c67ca;
+    }
+
+    .deck-delete-btn:hover {
+      background: #c82333;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        font-size: 17px;
+      }
+
+      .navbar {
+        padding: 12px;
+      }
+
+      .brand-name {
+        font-size: 12px;
+      }
+
+      .container {
+        padding: 20px 18px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      h2 {
+        font-size: 26px;
+      }
+
+      h3 {
+        font-size: 21px;
+      }
+
+      table th,
+      table td {
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        font-size: 16px;
+        background-attachment: scroll;
+      }
+
+      .navbar {
+        padding: 10px;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .navbar-left {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .brand-badge {
+        max-width: 175px;
+        overflow: hidden;
+      }
+
+      .brand-name {
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .quick-back-btn {
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+
+      .user-menu-dropdown {
+        left: auto;
+        right: 0;
+        min-width: 220px;
+      }
+
+      .navbar button,
+      .user-menu-btn {
+        font-size: 15px;
+      }
+
+      .container {
+        padding: 12px 10px;
+      }
+
+      .home-hero {
+        height: 210px;
+        margin-top: -20px;
+      }
+
+      h1 {
+        font-size: 30px;
+      }
+
+      h2 {
+        font-size: 23px;
+      }
+
+      h3 {
+        font-size: 19px;
+      }
+
+      .deck-item {
+        align-items: flex-start;
+      }
+
+      .deck-side-stats {
+        min-width: 56px;
+        font-size: 11px;
+      }
+
+      .deck-name {
+        font-size: 15px;
+      }
+
+      table {
+        min-width: 600px;
+      }
+
+      input,
+      select {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- AUTH MODAL -->
+<div id="authModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+  <div style="background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); max-width: 400px; width: 90%;">
+    <!-- Login Tab -->
+    <div id="loginTab" style="display: block;">
+      <h2 style="margin-bottom: 20px; color: #333; font-size: 26px; text-align: center;">Login</h2>
+      <input type="text" id="loginUsername" placeholder="Username" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+      <input type="password" id="loginPassword" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+      <button onclick="handleLogin()" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Login</button>
+    </div>
+    
+    <!-- Register Tab -->
+    <div id="registerTab" style="display: none;">
+      <h2 style="margin-bottom: 20px; color: #333; font-size: 18px;">Register</h2>
+      <input type="text" id="registerUsername" placeholder="Username" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+      <input type="email" id="registerEmail" placeholder="Email" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+      <input type="password" id="registerPassword" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+      <button onclick="handleRegister()" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Register</button>
+      <p style="text-align: center; margin: 15px 0; color: #666;">oppure</p>
+      <button onclick="showLogin()" style="width: 100%; padding: 10px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Torna al Login</button>
+    </div>
+    
+    <p id="errorMsg" style="color: #dc3545; text-align: center; margin-top: 15px; font-size: 14px;"></p>
+  </div>
+</div>
+
+<!-- MAIN APP (nascosto finche non loggato) -->
+<div id="mainApp" style="display: none;">
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="navbar-left">
+    <button class="brand-badge" onclick="setActiveSection('home')" aria-label="Vai alla home">
+      <img class="brand-icon" src="https://cards.scryfall.io/art_crop/front/0/2/02df18c5-07b9-4e85-9c4b-58b63fa59437.jpg?1702429604" alt="Borborygmos">
+      <span class="brand-name">BORBORYGBROS</span>
+    </button>
+    <div class="user-menu-wrap">
+      <button id="userEmail" class="user-menu-btn" onclick="toggleUserMenu()">Utente</button>
+      <div id="userMenuDropdown" class="user-menu-dropdown">
+        <button onclick="goToHomeFromMenu()">Home page</button>
+        <button onclick="goToPlayersFromMenu()">Giocatori</button>
+        <button onclick="goToMatchesFromMenu()">Partite</button>
+        <button onclick="goToOtherFromMenu()">Altro</button>
+        <button onclick="goToMyProfileFromMenu()">Il mio profilo</button>
+        <button onclick="handleLogout()" style="color:#b00020;">Logout</button>
+      </div>
+    </div>
+  </div>
+  <button class="quick-back-btn" onclick="goBackQuick()">Indietro</button>
+</div>
+
+<div class="container">
+
+  <!-- HOME -->
+  <div id="home" class="section active">
+    <div class="home-hero">
+      <div class="home-hero-content">
+        <div class="home-hero-title">BORBORYGBROS</div>
+      </div>
+    </div>
+
+    <div class="home-grid">
+      <div class="home-card" style="background-image: url('https://cards.scryfall.io/art_crop/front/3/f/3fa57822-8bca-4cdd-916f-261dae494228.jpg?1583965783');" onclick="setActiveSection('players')">
+        <div class="home-card-content">
+          <h3>Giocatori</h3>
+        </div>
+      </div>
+      <div class="home-card" style="background-image: url('https://cards.scryfall.io/art_crop/front/0/4/0464a507-20e5-42d5-8aca-12504a869f21.jpg?1562487441');" onclick="setActiveSection('matches')">
+        <div class="home-card-content">
+          <h3>Partite</h3>
+        </div>
+      </div>
+      <div class="home-card" style="background-image: url('https://cards.scryfall.io/art_crop/front/7/d/7de4c754-dfff-4c0b-93c6-3725ad1efbb0.jpg?1562488861');" onclick="setActiveSection('other')">
+        <div class="home-card-content">
+          <h3>Altro</h3>
+        </div>
+      </div>
+      <div id="homeCustomImageCard" class="home-card" style="background-image: url('https://cards.scryfall.io/art_crop/front/d/a/da4ab2ac-4b15-4fba-bc11-d4e185e7f99c.jpg?1562794058');" onclick="goToMyProfileFromMenu()">
+        <div class="home-card-content">
+          <div>
+            <h3>Immagine personalizzata</h3>
+            <button type="button" onclick="event.stopPropagation(); triggerHomeCustomImagePicker();" style="margin-top:10px;">Carica da PC</button>
+            <input id="homeCustomImageInput" type="file" accept="image/*" style="display:none;" onchange="onHomeCustomImageSelected(event)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GIOCATORI -->
+    <div id="players" class="section">
+      <!-- AVVISO DATABASE -->
+      <div id="dbWarning" style="background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; padding: 15px; border-radius: 4px; margin-bottom: 20px; display: none;">
+        <strong>Configurazione Database Necessaria</strong><br>
+        Per utilizzare al meglio le funzionalita di profili personali, aggiungi questa colonna al tuo database Supabase:<br>
+        <code style="background: #f8f9fa; padding: 2px 4px; border-radius: 3px; font-family: monospace;">ALTER TABLE players ADD COLUMN user_id UUID REFERENCES auth.users(id);</code><br>
+        <small>Una volta aggiunta, ricarica la pagina per abilitare tutte le funzionalita.</small>
+      </div>
+      
+      <!-- DASHBOARD GIOCATORI -->
+    <div id="playersDashboard" style="display: block;">
+      <div id="playersCardsContainer" class="box-container" style="margin-top: 18px;">
+        <!-- cards giocatori -->
+      </div>
+    </div>
+
+    <!-- SOTTOPAGINA: PROFILO GIOCATORE -->
+    <div id="playerProfile-page" style="display: none;">
+      <div id="playerProfileContainer">
+        <!-- Caricato dinamicamente -->
+      </div>
+    </div>
+
+    <!-- SOTTOPAGINA: IL MIO PROFILO -->
+    <div id="myProfile-page" style="display: none;">
+      <div id="myProfileContainer">
+        <!-- Caricato dinamicamente -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PARTITE -->
+  <div id="matches" class="section">
+    <h2>Storico Partite</h2>
+    <div class="list-container">
+      <table id="matchesList">
+        <thead>
+          <tr>
+            <th>N. Giocatori</th>
+            <th>Partecipanti (Giocatore - Mazzo)</th>
+            <th>Vincitore (Giocatore - Mazzo)</th>
+          </tr>
+        </thead>
+        <tbody id="matchesBody">
+        </tbody>
+      </table>
+    </div>
+    
+    <h2>Registra Partita</h2>
+    <div class="form-group">
+      <h3>Numero Giocatori</h3>
+      <select id="playersCount" onchange="renderMatchParticipantsForm()">
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4" selected>4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
+
+      <div id="participantsContainer"></div>
+
+      <h3>Anno Partita</h3>
+      <select id="matchYear"></select>
+
+      <h3>Vincitore</h3>
+      <select id="winner">
+        <option value="">Seleziona vincitore...</option>
+      </select>
+      
+      <button onclick="addMatch()">Salva Partita</button>
+    </div>
+    
+    <h2>Statistiche</h2>
+    <div style="margin-bottom: 10px;">
+      <label for="statsYearFilter" style="font-weight: bold; color: #555; margin-right: 8px;">Anno:</label>
+      <select id="statsYearFilter" onchange="loadMatchStats()"></select>
+    </div>
+    <div id="matchStatsContainer">
+      <p>Caricamento statistiche...</p>
+    </div>
+  </div>
+
+  <!-- ALTRO -->
+  <div id="other" class="section">
+    <div class="other-grid">
+      <section class="other-panel">
+        <h3>Generatore tavoli</h3>
+        <p class="other-note">Seleziona i giocatori presenti e genera una divisione casuale per tavoli.</p>
+
+        <div class="other-row">
+          <div>
+            <label for="tablesCount">Numero tavoli</label>
+            <input id="tablesCount" type="number" min="1" value="2">
+          </div>
+          <div>
+            <label for="tablesSizes">Giocatori per tavolo</label>
+            <input id="tablesSizes" type="text" placeholder="Es: 3,3 oppure 3,4">
+          </div>
+        </div>
+
+        <label style="font-weight:700;color:#2f3f53;display:block;margin-bottom:6px;">Giocatori presenti</label>
+        <div id="tableGeneratorPlayers" class="other-players-list"></div>
+
+        <button onclick="generateRandomTables()">Genera tavoli</button>
+        <div id="tableGeneratorResult" class="other-result"></div>
+      </section>
+
+      <section class="other-panel">
+        <h3>Vocabolario</h3>
+        <div id="vocabularyList" class="vocab-list"></div>
+
+        <div class="other-row" style="margin-top:10px;">
+          <div>
+            <label for="newVocabTerm">Termine</label>
+            <input id="newVocabTerm" type="text" placeholder="Es: tocco letale">
+          </div>
+          <div>
+            <label for="newVocabAlias">Traduzione</label>
+            <input id="newVocabAlias" type="text" placeholder="Es: tocco letame">
+          </div>
+        </div>
+        <button onclick="addVocabularyEntry()">Aggiungi abbinamento</button>
+      </section>
+
+      <section class="other-panel">
+        <h3>Link utili</h3>
+        <div id="usefulLinksList" class="link-list">
+          <div class="link-item">
+            <span class="link-title">Alternative cheap a carte costose</span>
+            <span class="link-separator">-</span>
+            <a class="link-url" href="http://thatbutbudget.com/" target="_blank" rel="noopener noreferrer">http://thatbutbudget.com/</a>
+          </div>
+          <div class="link-item">
+            <span class="link-title">Per stampare proxy</span>
+            <span class="link-separator">-</span>
+            <a class="link-url" href="https://mtgprint.net/" target="_blank" rel="noopener noreferrer">https://mtgprint.net/</a>
+          </div>
+        </div>
+
+        <div class="other-row" style="margin-top:10px;">
+          <div>
+            <label for="newUsefulLinkName">Nome sito</label>
+            <input id="newUsefulLinkName" type="text" placeholder="Es: Scryfall">
+          </div>
+          <div>
+            <label for="newUsefulLinkUrl">URL</label>
+            <input id="newUsefulLinkUrl" type="text" placeholder="Es: https://scryfall.com">
+          </div>
+        </div>
+        <button onclick="addUsefulLink()">Aggiungi link</button>
+      </section>
+    </div>
+  </div>
+
+</div>
+
+<!-- SCRIPT MODULES -->
+<script src="./supabase.js"></script>
+<script src="./js/common.js"></script>
+<script src="./js/auth.js"></script>
+<script src="./js/home.js"></script>
+<script src="./js/players.js"></script>
+<script src="./js/matches.js"></script>
+<script src="./js/other.js"></script>
+
+<!-- NAVIGATION LOGIC -->
+<script>
+  function closeUserMenu() {
+    const menu = document.getElementById('userMenuDropdown');
+    if (menu) menu.style.display = 'none';
+  }
+
+  function setActiveSection(section) {
+    document.querySelectorAll('.nav-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.section === section);
+    });
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(section).classList.add('active');
+
+    if (section === 'home') initHomeSection();
+    if (section === 'players') initPlayersSection();
+    if (section === 'matches') initMatchesSection();
+    if (section === 'other') initOtherSection();
+
+    closeUserMenu();
+  }
+
+  function goToHomeFromMenu() {
+    setActiveSection('home');
+  }
+
+  function goToMyProfileFromMenu() {
+    setActiveSection('players');
+    navigateToSubpage('myProfile');
+    closeUserMenu();
+  }
+
+  function goToPlayersFromMenu() {
+    setActiveSection('players');
+    navigateToSubpage(null);
+    closeUserMenu();
+  }
+
+  function goToMatchesFromMenu() {
+    setActiveSection('matches');
+    closeUserMenu();
+  }
+
+  function goToOtherFromMenu() {
+    setActiveSection('other');
+    closeUserMenu();
+  }
+
+  function goBackQuick() {
+    const activeSection = document.querySelector('.section.active')?.id;
+    if (!activeSection) return;
+
+    if (activeSection === 'players') {
+      const myProfilePage = document.getElementById('myProfile-page');
+      const playerProfilePage = document.getElementById('playerProfile-page');
+      const onSubpage =
+        (myProfilePage && myProfilePage.style.display === 'block') ||
+        (playerProfilePage && playerProfilePage.style.display === 'block');
+
+      if (onSubpage) {
+        navigateToSubpage(null);
+        return;
+      }
+    }
+
+    if (activeSection !== 'home') {
+      setActiveSection('home');
+    }
+  }
+
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      setActiveSection(e.target.dataset.section);
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    const wrap = document.querySelector('.user-menu-wrap');
+    if (!wrap || !wrap.contains(e.target)) closeUserMenu();
+  });
+
+  // INIT AL CARICAMENTO
+  window.addEventListener('load', () => {
+    checkAuth();
+  });
+</script>
+
+</div><!-- /mainApp -->
+
+</body>
+</html>

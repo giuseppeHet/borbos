@@ -1,0 +1,8 @@
+<<<<<<< HEAD
+RGVcA2bHzeqYD2Id
+
+=======
+RGVcA2bHzeqYD2Id
+
+>>>>>>> e3e3bda (first)
+python3 -m http.server
