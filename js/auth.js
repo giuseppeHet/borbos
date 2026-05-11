@@ -13,7 +13,8 @@ const MANUAL_USERS = [
   { id: "88888888-8888-4888-8888-888888888888", username: "Zatta", password: "Zatta123" },
   { id: "99999999-9999-4999-8999-999999999999", username: "Gordon", password: "Gordon123" },
   { id: "aaaaaaa1-aaaa-4aaa-8aaa-aaaaaaaaaaa1", username: "Doug", password: "Doug123" },
-  { id: "bbbbbbb2-bbbb-4bbb-8bbb-bbbbbbbbbbb2", username: "Todd", password: "Todd123" }
+  { id: "bbbbbbb2-bbbb-4bbb-8bbb-bbbbbbbbbbb2", username: "Todd", password: "Todd123" },
+  { id: "ccccccc3-cccc-4ccc-8ccc-ccccccccccc3", username: "Jeff", password: "Jeff123" }
 ];
 
 const USER_AVATAR_BY_NAME = {
@@ -26,7 +27,8 @@ const USER_AVATAR_BY_NAME = {
   doug: "https://cards.scryfall.io/art_crop/front/6/5/651626f5-aca6-4653-aa27-36c919566cb0.jpg?1720467986",
   boss: "https://cards.scryfall.io/art_crop/front/0/0/00325992-ec1c-469a-8df0-ffb9a197d221.jpg?1562799056",
   flint: "https://cards.scryfall.io/art_crop/front/0/e/0e62aa7e-d9f9-42d4-9eed-5f51f88047c6.jpg?1562628641",
-  zatta: "https://cards.scryfall.io/art_crop/front/0/2/0276e9da-73fc-4d27-bbf1-726a37f5d5a0.jpg?1562487438"
+  zatta: "https://cards.scryfall.io/art_crop/front/0/2/0276e9da-73fc-4d27-bbf1-726a37f5d5a0.jpg?1562487438",
+  jeff: "https://cards.scryfall.io/art_crop/front/e/8/e8100f78-0dd1-4750-8a8a-d4fda30d8432.jpg?1562489841"
 };
 
 const DEFAULT_USER_AVATAR = "https://cards.scryfall.io/art_crop/front/d/a/da4ab2ac-4b15-4fba-bc11-d4e185e7f99c.jpg?1562794058";
