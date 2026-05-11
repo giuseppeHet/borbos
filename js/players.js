@@ -19,7 +19,9 @@ const PLAYER_ART_BY_NAME = {
   "doug": "https://cards.scryfall.io/art_crop/front/6/5/651626f5-aca6-4653-aa27-36c919566cb0.jpg?1720467986",
   "boss": "https://cards.scryfall.io/art_crop/front/0/0/00325992-ec1c-469a-8df0-ffb9a197d221.jpg?1562799056",
   "flint": "https://cards.scryfall.io/art_crop/front/0/e/0e62aa7e-d9f9-42d4-9eed-5f51f88047c6.jpg?1562628641",
-  "zatta": "https://cards.scryfall.io/art_crop/front/0/2/0276e9da-73fc-4d27-bbf1-726a37f5d5a0.jpg?1562487438"
+  "zatta": "https://cards.scryfall.io/art_crop/front/0/2/0276e9da-73fc-4d27-bbf1-726a37f5d5a0.jpg?1562487438",
+  "todd": "https://cards.scryfall.io/art_crop/front/d/a/dae9ee75-30b8-4e24-af8b-031c816d3221.jpg?1737999942",
+  "jeff": "https://cards.scryfall.io/art_crop/front/e/8/e8100f78-0dd1-4750-8a8a-d4fda30d8432.jpg?1562489841"
 };
 
 const MTG_COLOR_NAMES = { W: "Bianco", U: "Blu", B: "Nero", R: "Rosso", G: "Verde" };
